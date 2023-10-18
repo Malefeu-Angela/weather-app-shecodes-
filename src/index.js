@@ -22,15 +22,18 @@ function formatDate(timestamp) {
   return `${day} ${hours}:${minutes}`;
 }
 
-function displayForecast() {
-  let forecastElement = document.querySelector(#forecast);
+function displayForecast(response) {
+  console.log(response.data.daily);
+
+  let forecastElement = document.querySelector("#forecast");
 
   let days = ["Wed", "Thu", "Fri", "Sat"];
 
   let forecastHTML = `<div class="row">`;
   days.forEach(function (day) {
-  forecastHTML = forecastHTML +
-  `
+    forecastHTML =
+      forecastHTML +
+      `
                 <div class="col-2">
                   <div class="weather-forecast-date">${day}</div>
 
@@ -42,11 +45,19 @@ function displayForecast() {
                 </div>
               </div>
               `;
-            });
-                forecastHTML = forecastHTML + `</div`;
-              forecastElement.innerHTML = forecastHTML;
+  });
+  forecastHTML = forecastHTML + `</div`;
+  forecastElement.innerHTML = forecastHTML;
+}
 
-              console.log(forecastHTML);
+function getForecast(coordinates) {
+  console.log(coordinates);
+
+  let apikey = "a105bf90a407023abfboc7aeet447b59";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?lon=${coordinates.latitude}&lat=${coordinates.longitude}&key=${apikey}&units=metric`;
+
+  console.log(apiUrl);
+  axios.get(apiUrl).then(displayForecast);
 }
 
 function displayWeather(response) {
@@ -74,6 +85,8 @@ function displayWeather(response) {
   iconElement.setAttribute("src", response.data.condition.icon_url);
 
   iconElement.setAttribute("alt", response.data.condition.description);
+
+  getForecast(response.data.coordinates);
 }
 
 function search(city) {
@@ -121,4 +134,3 @@ let celsiusLink = document.querySelector("#celsius-link");
 celsiusLink.addEventListener("click", displayCelsiusTemperature);
 
 search("pretoria");
-displayForecast();
